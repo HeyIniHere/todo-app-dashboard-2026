@@ -17,8 +17,29 @@ def log_visit(page, user_id):
     db.session.add(visit)
     db.session.commit()
 
+def log_waitlist(email, user_id):
+    """Log a waitlist signup for an email."""
+    waitlist = Waitlist(email=email, user=user_id)
+    db.session.add(waitlist)
+    db.session.commit()
 
+def log_task_creation(title, user_id):
+    """Log a task creation."""
+    task = Task(title=title, user=user_id)
+    db.session.add(task)
+    db.session.commit()
 
+def log_task_toggle(task_id, status, user_id):
+    """Log a task toggle."""
+    task = Task.query.get(task_id)
+    task.toggle()
+    db.session.commit()
+
+def log_task_removal(task_id, user_id):
+    """Log a task removal."""
+    task = Task.query.get(task_id)
+    db.session.delete(task)
+    db.session.commit()
 
 ###############################################################################
 # Routes
