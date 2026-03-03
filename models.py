@@ -55,7 +55,18 @@ class Visit(db.Model):
 
     def __repr__(self):
         return f"<Visit id={self.id} page='{self.page}' timestamp={self.timestamp}>"
-    
+
+
+class TaskActivityLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    action_type = db.Column(db.String(50), nullable=False)  
+    description = db.Column(db.String(200))               
+    timestamp = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    def __repr__(self):
+        return f"<TaskActivityLog {self.action_type} by User {self.user_id}>"
+
 
 class Waitlist(db.Model):
     id = db.Column(db.Integer, primary_key=True)

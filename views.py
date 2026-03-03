@@ -66,7 +66,7 @@ def invitation():
         # Here you would send a verification email and add to waitlist
         print(f"Sending invitation to {email}")
         #log waitlist signup at this point
-        log_visit(page=f"waitlist_signed_up: {email}", user_id=current_user.id if current_user.is_authenticated else None)
+        log_waitlist(email, current_user.id if current_user.is_authenticated else None)
     
     return render_template('invitation.html')
 
@@ -119,7 +119,7 @@ def api_create_task():
     db.session.add(new_task)
 
     #log the task creation at this point
-    log_visit(page=f"task_created: {new_task.title}", user_id=current_user.id if current_user.is_authenticated else None)
+    log_task_creation(new_task.title, current_user.id if current_user.is_authenticated else None)
     db.session.commit()
     return {
         "task": new_task.to_dict()
@@ -137,6 +137,7 @@ def api_toggle_task(task_id):
     task.toggle()
 
     #log the task toggle at this point
+    log_task_toggle(task.id, task.status, current_user.id if current_user.is_authenticated else None)
     log_visit(page=f"task_toggled: {task.id} to {task.status}", user_id=current_user.id if current_user.is_authenticated else None)
     db.session.commit()
 
