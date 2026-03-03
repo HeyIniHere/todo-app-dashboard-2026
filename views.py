@@ -106,7 +106,7 @@ def api_create_task():
     db.session.add(new_task)
 
     #log the task creation at this point
-    log_task_creation(new_task.title, current_user.id if current_user.is_authenticated else None)
+    log_task_activity(action_type="task_created", description=new_task.title, user_id=current_user.id if current_user.is_authenticated else None)
     db.session.commit()
     return {
         "task": new_task.to_dict()
@@ -124,8 +124,7 @@ def api_toggle_task(task_id):
     task.toggle()
 
     #log the task toggle at this point
-    log_task_toggle(task.id, task.status, current_user.id if current_user.is_authenticated else None)
-    log_visit(page=f"task_toggled: {task.id} to {task.status}", user_id=current_user.id if current_user.is_authenticated else None)
+    log_task_activity(action_type="task_toggled", description=f"Task {task.id} toggled to {task.status}", user_id=current_user.id if current_user.is_authenticated else None)
     db.session.commit()
 
     return {"task": task.to_dict()}, 200
@@ -140,8 +139,7 @@ def remove(task_id):
         return redirect(url_for('main.todo'))
     
     #log the task removal at this point
-    log_visit(page=f"task_removed: {task.id}", user_id=current_user.id if current_user.is_authenticated else None)
-
+    log_task_activity(action_type="task_removed", description=f"Task {task.id} removed", user_id=current_user.id if current_user.is_authenticated else None)
     db.session.delete(task)
     db.session.commit()
 
