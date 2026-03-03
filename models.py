@@ -59,7 +59,7 @@ class Visit(db.Model):
 
 class TaskActivityLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    user = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     action_type = db.Column(db.String(50), nullable=False)  
     description = db.Column(db.String(200))               
     timestamp = db.Column(db.DateTime, default=db.func.current_timestamp())

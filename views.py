@@ -17,9 +17,9 @@ def log_visit(page, user_id):
     db.session.add(visit)
     db.session.commit()
 
-def log_waitlist(email, user_id):
+def log_waitlist(email):
     """Log a waitlist signup for an email."""
-    waitlist = Waitlist(email=email, user=user_id)
+    waitlist = Waitlist(email=email)
     db.session.add(waitlist)
     db.session.commit()
 
@@ -53,7 +53,7 @@ def invitation():
         # Here you would send a verification email and add to waitlist
         print(f"Sending invitation to {email}")
         #log waitlist signup at this point
-        log_waitlist(email, current_user.id if current_user.is_authenticated else None)
+        log_waitlist(email)
     
     return render_template('invitation.html')
 
