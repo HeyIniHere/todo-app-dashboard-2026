@@ -65,7 +65,7 @@ class TaskActivityLog(db.Model):
     timestamp = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     def __repr__(self):
-        return f"<TaskActivityLog {self.action_type} by User {self.user_id}>"
+        return f"<TaskActivityLog {self.action_type} by User {self.user}>"
 
 
 class Waitlist(db.Model):
