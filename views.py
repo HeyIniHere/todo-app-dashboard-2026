@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, redirect, url_for
 from flask import request
 from task import Task
 from flask_login import login_required, current_user
-from models import db, Task, User, Visit, Waitlist
+from models import db, Task, User, Visit, Waitlist, TaskActivityLog
 # import datetime
 import datetime
 
@@ -25,9 +25,8 @@ def log_waitlist(email, user_id):
 
 def log_task_activity(action_type, description, user_id):
     """Log a task activity."""
-    task_activity = TaskActivityLog(action_type=action_type, description=description, user=user_id)
-    db.session.add(task_activity)
-    db.session.commit()
+    log_entry = TaskActivityLog(action_type=action_type, description=description, user=user_id)
+    db.session.add(log_entry)
 
 ###############################################################################
 # Routes
