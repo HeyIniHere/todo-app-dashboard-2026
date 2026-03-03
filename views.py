@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, redirect, url_for
 from flask import request
 from task import Task
 from flask_login import login_required, current_user
-from models import db, Task, User, Visit, Waitlist
+from models import db, Task, User, Visit, Waitlist, TaskActivityLog
 # import datetime
 import datetime
 
@@ -17,6 +17,16 @@ def log_visit(page, user_id):
     db.session.add(visit)
     db.session.commit()
 
+def log_waitlist(email):
+    """Log a waitlist signup for an email."""
+    waitlist = Waitlist(email=email)
+    db.session.add(waitlist)
+    db.session.commit()
+
+def log_task_activity(action_type, description, user_id):
+    """Log a task activity."""
+    log_entry = TaskActivityLog(action_type=action_type, description=description, user=user_id)
+    db.session.add(log_entry)
 
 ###############################################################################
 # Routes
@@ -36,17 +46,22 @@ def index():
 
 @main_blueprint.route('/invitation', methods=['GET', 'POST'])
 def invitation():
+    log_visit(page='invitation', user_id=current_user.id if current_user.is_authenticated else None)
 
     if request.method == 'POST':
         email = request.form['email']
         # Here you would send a verification email and add to waitlist
         print(f"Sending invitation to {email}")
+        #log waitlist signup at this point
+        log_waitlist(email)
+    
     return render_template('invitation.html')
 
 
 @main_blueprint.route('/todo', methods=['GET', 'POST'])
 @login_required
 def todo():
+    log_visit(page='todo', user_id=current_user.id if current_user.is_authenticated else None)
     return render_template('todo.html')
 
 
@@ -61,16 +76,16 @@ def dashboard():
     two_week_notes = [random.randint(0, 15) for _ in range(7)]
 
     return render_template('admin.html',
-                           date=datetime.datetime.now().strftime("%B %d, %Y"),
-                           total_users=716,     # add real number
-                           new_users=5,         # add real number
-                           visits_today=120,    # add real number
-                           productivity_change=0.6,   # add real number
-                           visits=visits,           # add real value
-                           chart_week=chart_week,   # update list to show today as the last day in the chart
-                           week_notes=week_notes,   # add real values
-                           two_week_notes=two_week_notes  # add real values
-                           )
+        date=datetime.datetime.now().strftime("%B %d, %Y"),
+        total_users=716,     # add real number
+        new_users=5,         # add real number
+        visits_today=120,    # add real number
+        productivity_change=0.6,   # add real number
+        visits=visits,           # add real value
+        chart_week=chart_week,   # update list to show today as the last day in the chart
+        week_notes=week_notes,   # add real values
+        two_week_notes=two_week_notes  # add real values
+    )
 
 
 
@@ -89,6 +104,9 @@ def api_create_task():
     data = request.get_json()
     new_task = Task(title=data['title'], user_id=current_user.id)
     db.session.add(new_task)
+
+    #log the task creation at this point
+    log_task_activity(action_type="task_created", description=new_task.title, user_id=current_user.id if current_user.is_authenticated else None)
     db.session.commit()
     return {
         "task": new_task.to_dict()
@@ -104,6 +122,9 @@ def api_toggle_task(task_id):
         return {"error": "Task not found"}, 404
 
     task.toggle()
+
+    #log the task toggle at this point
+    log_task_activity(action_type="task_toggled", description=f"Task {task.id} toggled to {task.status}", user_id=current_user.id if current_user.is_authenticated else None)
     db.session.commit()
 
     return {"task": task.to_dict()}, 200
@@ -116,7 +137,9 @@ def remove(task_id):
 
     if task is None:
         return redirect(url_for('main.todo'))
-
+    
+    #log the task removal at this point
+    log_task_activity(action_type="task_removed", description=f"Task {task.id} removed", user_id=current_user.id if current_user.is_authenticated else None)
     db.session.delete(task)
     db.session.commit()
 
