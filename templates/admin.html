@@ -349,7 +349,7 @@
                   <br>
                   <span>Database has {{ total_users }} Users</span>
                   <br>
-                  <span>Database has {{ tasks|length }} Tasks</span>
+                  <span>Database has {{ total_tasks }} Tasks</span>
 
                   
 
@@ -357,7 +357,7 @@
                   <h6 class="text-capitalize">Recent visits</h6>
                   <p class="text-sm mb-0">
                     {% for visit in visits %}
-                    <span>{{ visit.date }} : {{ visit.page }}</span>
+                    <span>{{ visit.timestamp.strftime('%Y-%m-%d %H:%M') }} : {{ visit.page }}</span>
                     <br>
                     {% endfor %}
                   </p>
@@ -368,7 +368,7 @@
                     
                     {% for visit in visits %}
                       {% if visit.page == "state-not-found" or visit.page == "State-mismatch" %}
-                        <span>{{ visit.date }} : {{ visit.page }}</span>
+                      <span>{{ visit.timestamp.strftime('%m-%d') }} : {{ visit.page }}</span>
                         <br>
                       {% endif %}
                     {% endfor %}
@@ -583,7 +583,7 @@
     new Chart(ctx1, {
       type: "bar",
       data: {
-        labels: ["index", "login-g", "callback", "user-name", "license", "waitlist", "state-not-found", "State-mismatch"],
+        labels: {{ page_labels | safe }},
         datasets: [{
           label: "visits",
           tension: 0.2,
@@ -593,21 +593,9 @@
           backgroundColor: "#2d89ce",
           borderWidth: 4,
           fill: false,
-          data: {{ page_visits }},
+          data: {{ page_counts | safe }},
           maxBarThickness: 26
         },
-        // {
-        //   label: "last week",
-        //   tension: 0.1,
-        //   borderWidth: 0,
-        //   pointRadius: 0,
-        //   borderColor: "#2dcbce",
-        //   backgroundColor: "#2dcbce",
-        //   borderWidth: 2,
-        //   fill: false,
-        //   data: {{ two_week_notes }},
-        //   maxBarThickness: 6
-        // }
       ],
       },
       options: {
@@ -694,7 +682,7 @@
         backgroundColor: "#2d89ce",
         borderWidth: 4,
         fill: false,
-        data: {{ week_notes }},
+        data: {{ week_visits }},
         maxBarThickness: 6
       },{
         label: "last week",
@@ -705,7 +693,7 @@
         backgroundColor: "#2dcbce",
         borderWidth: 2,
         fill: false,
-        data: {{ two_week_notes }},
+        data: {{ two_week_visits }},
         maxBarThickness: 6
       }],
     },
