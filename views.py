@@ -101,8 +101,8 @@ def dashboard():
         chart_days.append(d.strftime("%a"))
         this_week_data.append(Visit.query.filter(Visit.page == "index", db.func.date(Visit.timestamp) == d).count())
         last_week_data.append(Visit.query.filter(Visit.page == "index", db.func.date(Visit.timestamp) == old_d).count())
-        user_this_week_data.append(User.query.filter(db.func.date(User.date_created)>= d).count())
-        user_last_week_data.append(User.query.filter(db.func.date(User.date_created) >= old_d).count())
+        user_this_week_data.append(User.query.filter(db.func.date(User.date_created) == d).count())
+        user_last_week_data.append(User.query.filter(db.func.date(User.date_created) == old_d).count())
     
     #Bar Chart Data
     pages_stats = db.session.query(Visit.page, db.func.count(Visit.id)).filter(db.func.date(Visit.timestamp) == today).group_by(Visit.page).all()
