@@ -48,7 +48,7 @@ def login():
             login_user(user)
             return redirect(url_for('main.todo'))
         else:
-            log_visit(page='login-failure', user_id=None)
+            log_visit(page='incorrect-password', user_id=None)
         
     return render_template('login.html')
 

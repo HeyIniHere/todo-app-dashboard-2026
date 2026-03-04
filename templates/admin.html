@@ -365,12 +365,13 @@
                 <div class="col-6">  
                   <h6 class="text-capitalize">Recent Errors</h6>
                   <p class="text-sm mb-0 text-danger">
-                    
-                    {% for visit in visits %}
-                      {% if visit.page == "state-not-found" or visit.page == "State-mismatch" %}
-                      <span>{{ visit.timestamp.strftime('%m-%d') }} : {{ visit.page }}</span>
-                        <br>
-                      {% endif %}
+                    {% for error in error_visits %}
+                      <span>
+                        <strong>{{ error.timestamp.strftime('%H:%M') }}</strong> : {{ error.page }}
+                      </span>
+                      <br>
+                    {% else %}
+                      <span class="text-muted">No errors recorded recently.</span>
                     {% endfor %}
                   </p>
 

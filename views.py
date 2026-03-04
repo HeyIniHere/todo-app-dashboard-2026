@@ -81,6 +81,7 @@ def dashboard():
     visits_today = Visit.query.filter(db.func.date(Visit.timestamp) == db.func.date(today)).count()
     total_visits = Visit.query.count()
     recent_visits = Visit.query.order_by(Visit.timestamp.desc()).limit(15).all()
+    error_logs = Visit.query.filter(Visit.page.in_(['login-failure', 'state-not-found', 'State-mismatch'])).limit(10).all()
 
     #Waitlist stats
     waitlist_signups = Waitlist.query.filter(db.func.date(Waitlist.timestamp) >= week_ago).count()
@@ -101,10 +102,6 @@ def dashboard():
     pages_stats = db.session.query(Visit.page, db.func.count(Visit.id)).filter(db.func.date(Visit.timestamp) == today).group_by(Visit.page).all()
     page_labels = [page[0] for page in pages_stats]
     page_counts = [page[1] for page in pages_stats]
-    print(pages_stats)
-    print(this_week_data)
-    print(recent_visits)
-    #Task 
 
     return render_template('admin.html',
         date=datetime.datetime.now().strftime("%B %d, %Y"),
