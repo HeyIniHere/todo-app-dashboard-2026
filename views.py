@@ -76,7 +76,7 @@ def dashboard():
     total_users = User.query.count()
     total_tasks = Task.query.count()
     new_users = User.query.filter(User.date_created >= datetime.datetime.now() - datetime.timedelta(days=7)).count()
-    
+    new_users_all = User.query.filter(User.date_created >= datetime.datetime.now() - datetime.timedelta(days=7)).all()
 
     #Visit stats
     visits_today = Visit.query.filter(db.func.date(Visit.timestamp) == db.func.date(today)).count()
@@ -86,6 +86,7 @@ def dashboard():
 
     #Waitlist stats
     waitlist_signups = Waitlist.query.filter(db.func.date(Waitlist.timestamp) >= week_ago).count()
+    waitlist_all = Waitlist.query.all()
 
     #Chart Data
     chart_days = []
@@ -117,8 +118,10 @@ def dashboard():
         total_users=total_users,   
         total_tasks=total_tasks,
         error_logs=error_logs,
-        new_users=new_users,       
+        new_users=new_users, 
+        new_users_all=new_users_all,      
         waitlist_signups=waitlist_signups,
+        waitlist_all=waitlist_all,
         visits_today=visits_today,    
         productivity_change=0.6,   # add real number
         visits=recent_visits,           
