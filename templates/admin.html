@@ -357,7 +357,7 @@
                   <h6 class="text-capitalize">Recent visits</h6>
                   <p class="text-sm mb-0">
                     {% for visit in visits %}
-                    <span>{{ visit.date }} : {{ visit.page }}</span>
+                    <span>{{ visit.timestamp.strftime('%Y-%m-%d %H:%M') }} : {{ visit.page }}</span>
                     <br>
                     {% endfor %}
                   </p>
