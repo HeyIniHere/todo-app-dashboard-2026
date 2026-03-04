@@ -596,18 +596,6 @@
           data: {{ page_counts | safe }},
           maxBarThickness: 26
         },
-        // {
-        //   label: "last week",
-        //   tension: 0.1,
-        //   borderWidth: 0,
-        //   pointRadius: 0,
-        //   borderColor: "#2dcbce",
-        //   backgroundColor: "#2dcbce",
-        //   borderWidth: 2,
-        //   fill: false,
-        //   data: {{ two_week_notes }},
-        //   maxBarThickness: 6
-        // }
       ],
       },
       options: {
@@ -694,7 +682,7 @@
         backgroundColor: "#2d89ce",
         borderWidth: 4,
         fill: false,
-        data: {{ week_notes }},
+        data: {{ week_visits }},
         maxBarThickness: 6
       },{
         label: "last week",
@@ -705,7 +693,7 @@
         backgroundColor: "#2dcbce",
         borderWidth: 2,
         fill: false,
-        data: {{ two_week_notes }},
+        data: {{ two_week_visits }},
         maxBarThickness: 6
       }],
     },
