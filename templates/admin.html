@@ -368,7 +368,7 @@
                     
                     {% for visit in visits %}
                       {% if visit.page == "state-not-found" or visit.page == "State-mismatch" %}
-                        <span>{{ visit.date }} : {{ visit.page }}</span>
+                      <span>{{ visit.timestamp.strftime('%m-%d') }} : {{ visit.page }}</span>
                         <br>
                       {% endif %}
                     {% endfor %}
@@ -583,7 +583,7 @@
     new Chart(ctx1, {
       type: "bar",
       data: {
-        labels: ["index", "login-g", "callback", "user-name", "license", "waitlist", "state-not-found", "State-mismatch"],
+        labels: {{ page_labels | safe }},
         datasets: [{
           label: "visits",
           tension: 0.2,
@@ -593,7 +593,7 @@
           backgroundColor: "#2d89ce",
           borderWidth: 4,
           fill: false,
-          data: {{ page_visits }},
+          data: {{ page_counts | safe }},
           maxBarThickness: 26
         },
         // {
