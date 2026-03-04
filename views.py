@@ -75,7 +75,8 @@ def dashboard():
     #User stats
     total_users = User.query.count()
     total_tasks = Task.query.count()
-    # new_users = User.query.filter(User.date_created >= datetime.datetime.now() - datetime.timedelta(days=7)).count()
+    new_users = User.query.filter(User.date_created >= datetime.datetime.now() - datetime.timedelta(days=7)).count()
+    
 
     #Visit stats
     visits_today = Visit.query.filter(db.func.date(Visit.timestamp) == db.func.date(today)).count()
@@ -90,6 +91,9 @@ def dashboard():
     chart_days = []
     this_week_data = []
     last_week_data = []
+    user_last_week_data = []
+    user_this_week_data = []
+
     for day in range(7):
         d = week_ago + datetime.timedelta(days=day)
         old_d = last_week_start + datetime.timedelta(days=day)
@@ -97,11 +101,15 @@ def dashboard():
         chart_days.append(d.strftime("%a"))
         this_week_data.append(Visit.query.filter(Visit.page == "index", db.func.date(Visit.timestamp) == d).count())
         last_week_data.append(Visit.query.filter(Visit.page == "index", db.func.date(Visit.timestamp) == old_d).count())
+        user_this_week_data.append(User.query.filter(db.func.date(User.date_created)>= d).count())
+        user_last_week_data.append(User.query.filter(db.func.date(User.date_created) >= old_d).count())
     
     #Bar Chart Data
     pages_stats = db.session.query(Visit.page, db.func.count(Visit.id)).filter(db.func.date(Visit.timestamp) == today).group_by(Visit.page).all()
     page_labels = [page[0] for page in pages_stats]
     page_counts = [page[1] for page in pages_stats]
+
+    
 
     return render_template('admin.html',
         date=datetime.datetime.now().strftime("%B %d, %Y"),
@@ -109,14 +117,16 @@ def dashboard():
         total_users=total_users,   
         total_tasks=total_tasks,
         error_logs=error_logs,
-        new_users=2,         # add real number
+        new_users=new_users,       
         waitlist_signups=waitlist_signups,
         visits_today=visits_today,    
         productivity_change=0.6,   # add real number
         visits=recent_visits,           
-        chart_week=chart_days,   # update list to show today as the last day in the chart
-        week_visits=this_week_data,   # add real values
-        two_week_visits=last_week_data,  # add real values
+        chart_week=chart_days,   
+        week_visits=this_week_data,   
+        two_week_visits=last_week_data,  
+        week_users=user_this_week_data,
+        two_week_users=user_last_week_data,
         page_labels=page_labels,
         page_counts=page_counts
     )
