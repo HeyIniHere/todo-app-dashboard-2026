@@ -68,23 +68,53 @@ def todo():
 @main_blueprint.route('/dashboard', methods=['GET', 'POST'])
 # @login_required
 def dashboard():
+    today = datetime.datetime.now()
+    week_ago = today - datetime.timedelta(days=6)
+    last_week_start = today - datetime.timedelta(days=13)
+    last_week_end = today - datetime.timedelta(days=6)
     visits = Visit.query.all()
 
-    chart_week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    #User stats
+    total_users = User.query.count()
+    # new_users = User.query.filter(User.date_created >= datetime.datetime.now() - datetime.timedelta(days=7)).count()
 
-    week_notes = [random.randint(0, 15) for _ in range(7)]
-    two_week_notes = [random.randint(0, 15) for _ in range(7)]
+    #Visit stats
+    visits_today = Visit.query.filter(db.func.date(Visit.timestamp) == db.func.date(today)).count()
+    total_visits = Visit.query.count()
+    recent_visits = Visit.query.order_by(Visit.timestamp.desc()).limit(15).all()
+
+    #Waitlist stats
+    waitlist_signups = Waitlist.query.filter(db.func.date(Waitlist.timestamp) >= week_ago).count()
+
+    #Chart Data
+    chart_days = []
+    this_week_data = []
+    last_week_data = []
+    for day in range(7):
+        d = week_ago + datetime.timedelta(days=day)
+        old_d = last_week_start + datetime.timedelta(days=day)
+
+        chart_days.append(d.strftime("%a"))
+        this_week_data.append(Visit.query.filter(Visit.page == "index", db.func.date(Visit.timestamp) == d).count())
+        last_week_data.append(Visit.query.filter(Visit.page == "index", db.func.date(Visit.timestamp) == old_d).count())
+    
+    #Bar Chart Data
+
+
+    #Task 
 
     return render_template('admin.html',
         date=datetime.datetime.now().strftime("%B %d, %Y"),
-        total_users=716,     # add real number
+        total_visits=total_visits,
+        total_users=total_users,     
         new_users=5,         # add real number
-        visits_today=120,    # add real number
+        waitlist_signups=waitlist_signups,
+        visits_today=visits_today,    
         productivity_change=0.6,   # add real number
-        visits=visits,           # add real value
-        chart_week=chart_week,   # update list to show today as the last day in the chart
-        week_notes=week_notes,   # add real values
-        two_week_notes=two_week_notes  # add real values
+        visits=recent_visits,           
+        chart_week=chart_days,   # update list to show today as the last day in the chart
+        week_notes=this_week_data,   # add real values
+        two_week_notes=last_week_data  # add real values
     )
 
 
