@@ -68,7 +68,7 @@ def todo():
 @main_blueprint.route('/dashboard', methods=['GET', 'POST'])
 # @login_required
 def dashboard():
-    today = datetime.datetime.now().date()
+    today = datetime.datetime.now(datetime.timezone.utc).date()
     week_ago = today - datetime.timedelta(days=6)
     last_week_start = today - datetime.timedelta(days=13)
 
@@ -103,6 +103,7 @@ def dashboard():
     page_counts = [page[1] for page in pages_stats]
     print(pages_stats)
     print(this_week_data)
+    print(recent_visits)
     #Task 
 
     return render_template('admin.html',
@@ -110,7 +111,7 @@ def dashboard():
         total_visits=total_visits,
         total_users=total_users,   
         total_tasks=total_tasks,
-        new_users=5,         # add real number
+        new_users=2,         # add real number
         waitlist_signups=waitlist_signups,
         visits_today=visits_today,    
         productivity_change=0.6,   # add real number

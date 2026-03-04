@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask import request
 from models import db, User
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required,current_user
 from views import log_visit
 
 # Create a blueprint
@@ -12,6 +12,8 @@ auth_blueprint = Blueprint('auth', __name__)
 # in the same file
 @auth_blueprint.route('/signup', methods=['GET', 'POST'])
 def signup():
+    log_visit(page='signup', user_id=current_user.id if current_user.is_authenticated else None)
+
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -36,6 +38,7 @@ def signup():
 
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
+    log_visit(page='login', user_id=current_user.id if current_user.is_authenticated else None)
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
