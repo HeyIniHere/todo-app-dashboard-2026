@@ -71,11 +71,10 @@ def dashboard():
     today = datetime.datetime.now()
     week_ago = today - datetime.timedelta(days=6)
     last_week_start = today - datetime.timedelta(days=13)
-    last_week_end = today - datetime.timedelta(days=6)
-    visits = Visit.query.all()
 
     #User stats
     total_users = User.query.count()
+    total_tasks = Task.query.count()
     # new_users = User.query.filter(User.date_created >= datetime.datetime.now() - datetime.timedelta(days=7)).count()
 
     #Visit stats
@@ -99,22 +98,26 @@ def dashboard():
         last_week_data.append(Visit.query.filter(Visit.page == "index", db.func.date(Visit.timestamp) == old_d).count())
     
     #Bar Chart Data
-
-
+    pages_stats = db.session.query(Visit.page, db.func.count(Visit.id)).filter(db.func.date(Visit.timestamp) == today).group_by(Visit.page).all()
+    page_labels = [page[0] for page in pages_stats]
+    page_counts = [page[1] for page in pages_stats]
     #Task 
 
     return render_template('admin.html',
         date=datetime.datetime.now().strftime("%B %d, %Y"),
         total_visits=total_visits,
-        total_users=total_users,     
+        total_users=total_users,   
+        total_tasks=total_tasks,
         new_users=5,         # add real number
         waitlist_signups=waitlist_signups,
         visits_today=visits_today,    
         productivity_change=0.6,   # add real number
         visits=recent_visits,           
         chart_week=chart_days,   # update list to show today as the last day in the chart
-        week_notes=this_week_data,   # add real values
-        two_week_notes=last_week_data  # add real values
+        week_visits=this_week_data,   # add real values
+        two_week_visits=last_week_data,  # add real values
+        page_labels=page_labels,
+        page_counts=page_counts
     )
 
 
