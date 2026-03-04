@@ -11,7 +11,7 @@
 =========================================================
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
--->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -228,7 +228,7 @@
                   <div class="numbers">
                     <p class="text-sm mb-0 text-uppercase font-weight-bold">Waitlist</p>
                     <h5 class="font-weight-bolder">
-                      {{ waitlist|length }}
+                      {{ waitlist_signups}}
                     </h5>
                     <p class="mb-0">
 
@@ -345,9 +345,9 @@
                 <!-- <canvas id="chart-line2" class="chart-canvas" height="300"></canvas> -->
               <div class="row">
                 <div class="col-6">  
-                  <span>Database has {{ visits|length }} visits</span>
+                  <span>Database has {{ total_visits }} visits</span>
                   <br>
-                  <span>Database has {{ users|length }} Users</span>
+                  <span>Database has {{ total_users }} Users</span>
                   <br>
                   <span>Database has {{ tasks|length }} Tasks</span>
 
@@ -356,7 +356,7 @@
                   <br><br>
                   <h6 class="text-capitalize">Recent visits</h6>
                   <p class="text-sm mb-0">
-                    {% for visit in visits[0:11] %}
+                    {% for visit in visits %}
                     <span>{{ visit.date }} : {{ visit.page }}</span>
                     <br>
                     {% endfor %}
