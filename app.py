@@ -4,6 +4,7 @@ from flask import Flask
 from views import main_blueprint
 from auth import auth_blueprint
 from models import db, User
+from flask_migrate import Migrate
 from flask_login import LoginManager
 import os
 import dotenv
@@ -15,6 +16,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL').replace("
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 db.init_app(app)
+migrate = Migrate(app, db)
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'auth.login'

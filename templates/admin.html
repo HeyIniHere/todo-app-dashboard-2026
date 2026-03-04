@@ -365,7 +365,7 @@
                 <div class="col-6">  
                   <h6 class="text-capitalize">Recent Errors</h6>
                   <p class="text-sm mb-0 text-danger">
-                    {% for error in error_visits %}
+                    {% for error in error_logs %}
                       <span>
                         <strong>{{ error.timestamp.strftime('%H:%M') }}</strong> : {{ error.page }}
                       </span>
@@ -433,13 +433,13 @@
             </div>
             <div class="card-body pt-4 p-3">
               <ul class="list-group">
-                {% for user in users: %}
+                {% for user in new_users_all: %}
                 <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                   <div class="d-flex flex-column">
                     <h6 class="mb-3 text-sm">{{ user.name }}</h6>
                     <span class="mb-2 text-xs">Email Address: <span class="text-dark ms-sm-2 font-weight-bold"> {{ user.email }}</span></span>
                     <span class="text-xs">Joined on: <span class="text-dark ms-sm-2 font-weight-bold">{{ user.date_created }}</span></span>
-                    <span class="text-xs">Total tasks: <span class="text-dark ms-sm-2 font-weight-bold">{{ user.notes|length }}</span></span>
+                    <span class="text-xs">Total tasks: <span class="text-dark ms-sm-2 font-weight-bold">{{ user.tasks|length }}</span></span>
                   </div>
                   <div class="ms-auto text-end">
                     {% if user.id != 1 %}
@@ -462,12 +462,11 @@
             </div>
             <div class="card-body pt-4 p-3">
               <ul class="list-group">
-                {% for user in waitlist | reverse %}
+                {% for user in waitlist_all %}
                 <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                   <div class="d-flex flex-column">
-                    <span class="mb-2 text-xs">Email Address: <span class="text-dark ms-sm-2 font-weight-bold"> {{ user.email }}</span></span>
-                    <span class="text-xs">Joined on: <span class="text-dark ms-sm-2 font-weight-bold">{{ user.date }}</span></span>
-                    <span class="text-xs">IP-address: <span class="text-dark ms-sm-2 font-weight-bold">{{ user.ip_address }}</span></span>
+                    <span>{{ user.email }}  </span>
+                    <span class="text-xs">Joined on: <span class="text-dark ms-sm-2 font-weight-bold">{{ user.timestamp.strftime('%Y-%m-%d %H:%M') }}</span></span>
                   </div>
                   <div class="ms-auto text-end">
                     
@@ -683,7 +682,7 @@
         backgroundColor: "#2d89ce",
         borderWidth: 4,
         fill: false,
-        data: {{ week_visits }},
+        data: {{ week_users }},
         maxBarThickness: 6
       },{
         label: "last week",
@@ -694,7 +693,7 @@
         backgroundColor: "#2dcbce",
         borderWidth: 2,
         fill: false,
-        data: {{ two_week_visits }},
+        data: {{ two_week_users }},
         maxBarThickness: 6
       }],
     },
