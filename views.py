@@ -108,6 +108,7 @@ def dashboard():
         total_visits=total_visits,
         total_users=total_users,   
         total_tasks=total_tasks,
+        error_logs=error_logs,
         new_users=2,         # add real number
         waitlist_signups=waitlist_signups,
         visits_today=visits_today,    
